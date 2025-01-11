@@ -20,7 +20,14 @@ fun main() {
 
         val train = formTrain(passengers)
         println("Поезд на направлении '$direction' состоит из ${train.size} вагонов и отправлен.")
-        println("Вместимость каждого вагона: ${train.joinToString(", ")}")
+
+        // Вывод информации о вагонах
+        for ((index, wagon) in train.withIndex()) {
+            val wagonCapacity = wagon.first // Вместимость вагона
+            val passengersInWagon = wagon.second // Количество пассажиров в вагоне
+            val freeSeats = wagonCapacity - passengersInWagon // Свободные места
+            println("Вагон ${index + 1}: Вместимость = $wagonCapacity, Пассажиров = $passengersInWagon, Свободных мест = $freeSeats")
+        }
     }
 }
 
@@ -34,14 +41,15 @@ fun sellTickets(): Int {
     return Random.nextInt(5, 202) // Количество пассажиров от 5 до 201
 }
 
-fun formTrain(passengers: Int): List<Int> {
-    val train = mutableListOf<Int>()
+fun formTrain(passengers: Int): List<Pair<Int, Int>> {
+    val train = mutableListOf<Pair<Int, Int>>() // Список пар (вместимость вагона, количество пассажиров)
     var remainingPassengers = passengers
 
     while (remainingPassengers > 0) {
         val wagonCapacity = Random.nextInt(5, 26) // Вместимость вагона от 5 до 25
-        train.add(wagonCapacity)
-        remainingPassengers -= wagonCapacity
+        val passengersInWagon = if (remainingPassengers >= wagonCapacity) wagonCapacity else remainingPassengers
+        train.add(Pair(wagonCapacity, passengersInWagon))
+        remainingPassengers -= passengersInWagon
     }
 
     return train
